@@ -1,43 +1,44 @@
 import numpy as np
+import scipy.stats
 
 
-class Thevenot:
-    name = 'Thevenot'
-    latex_formula = r'f(\mathbf{x}) = exp(-\sum_{i=1}^{d}(x_i / \beta)^{2m}) - 2exp(-\prod_{i=1}^{d}x_i^2) \prod_{i=1}^{d}cos^ 2(x_i) '
-    latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
-    latex_formula_input_domain = r'x_i \in [-2\pi, 2\pi], \forall i \in \llbracket 1, d\rrbracket'
-    latex_formula_global_minimum = r'f(0, ..., 0)=-1, \text{ for}, m=5, \beta=15'
-    continuous = True
-    convex = True
-    separable = True
-    differentiable = True
-    multimodal = True
-    randomized_term = False
-    parametric = True
-
-    @classmethod
-    def is_dim_compatible(cls, d):
-        assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
-        return (d is None) or (d > 0)
-
-    def __init__(self, d, m=5, beta=15):
-        self.d = d
-        self.input_domain = np.array([[-2 * np.pi, 2 * np.pi] for _ in range(d)])
-        self.m = m
-        self.beta = beta
-
-    def get_param(self):
-        return {'m': self.m, 'beta': self.beta}
-
-    def get_global_minimum(self, d):
-        X = np.array([0 for i in range(1, d + 1)])
-        return X, self(X)
-
-    def __call__(self, X):
-        d = X.shape[0]
-        res = np.exp(-np.sum((X / self.beta) ** (2 * self.m)))
-        res = res - 2 * np.exp(-np.prod(X ** 2)) * np.prod(np.cos(X) ** 2)
-        return res
+# class Thevenot:
+#     name = 'Thevenot'
+#     latex_formula = r'f(\mathbf{x}) = exp(-\sum_{i=1}^{d}(x_i / \beta)^{2m}) - 2exp(-\prod_{i=1}^{d}x_i^2) \prod_{i=1}^{d}cos^ 2(x_i) '
+#     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
+#     latex_formula_input_domain = r'x_i \in [-2\pi, 2\pi], \forall i \in \llbracket 1, d\rrbracket'
+#     latex_formula_global_minimum = r'f(0, ..., 0)=-1, \text{ for}, m=5, \beta=15'
+#     continuous = True
+#     convex = False
+#     separable = True
+#     differentiable = True
+#     multimodal = True
+#     randomized_term = False
+#     parametric = True
+#
+#     @classmethod
+#     def is_dim_compatible(cls, d):
+#         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
+#         return (d is None) or (d > 0)
+#
+#     def __init__(self, d, m=5, beta=15):
+#         self.d = d
+#         self.input_domain = np.array([[-2 * np.pi, 2 * np.pi] for _ in range(d)])
+#         self.m = m
+#         self.beta = beta
+#
+#     def get_param(self):
+#         return {'m': self.m, 'beta': self.beta}
+#
+#     def get_global_minimum(self, d):
+#         X = np.array([0 for i in range(1, d + 1)])
+#         return X, self(X)
+#
+#     def __call__(self, X):
+#         d = X.shape[0]
+#         res = np.exp(-np.sum((X / self.beta) ** (2 * self.m)))
+#         res = res - 2 * np.exp(-np.prod(X ** 2)) * np.prod(np.cos(X) ** 2)
+#         return res
 
 
 class Ackley:
@@ -61,7 +62,8 @@ class Ackley:
 
     def __init__(self, d, a=20, b=0.2, c=2 * np.pi):
         self.d = d
-        self.input_domain = np.array([[-32, 32] for _ in range(d)])
+        self.input_domain = np.array([[-15, 15] for _ in range(d)])
+        # self.input_domain = np.array([[-32, 32] for _ in range(d)])
         self.a = a
         self.b = b
         self.c = c
@@ -238,7 +240,7 @@ class AlpineN1:
     continuous = True
     convex = False
     separable = True
-    differentiable = True
+    differentiable = False
     multimodal = True
     randomized_term = False
     parametric = False
@@ -369,6 +371,41 @@ class Beale:
         x, y = X
         res = (1.5 - x + x * y) ** 2 + (2.25 - x + x * y ** 2) ** 2 + (2.625 - x + x * y ** 3) * 2
         return res
+
+
+# class Normal_pdf:
+#     name = 'Normal_pdf'
+#     latex_formula = '...'
+#     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
+#     latex_formula_input_domain = '...'
+#     latex_formula_global_minimum = r'f(0)=1'
+#     continuous = True
+#     convex = False
+#     separable = False
+#     differentiable = True
+#     multimodal = True
+#     randomized_term = False
+#     parametric = False
+#
+#     @classmethod
+#     def is_dim_compatible(cls, d):
+#         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
+#         return (d is None) or (d > 1)
+#
+#     def __init__(self, d):
+#         self.d = d
+#         self.input_domain = np.array([[-10, 10] for _ in range(d)])
+#
+#     def get_param(self):
+#         return {}
+#
+#     def get_global_minimum(self, d):
+#         X = np.array([0] * d)
+#         return X, self(X)
+#
+#     def __call__(self, X):
+#         res = scipy.stats.norm.pdf(X - 2)
+#         return res
 
 
 class Bird:
@@ -648,11 +685,11 @@ class Brown:
     @classmethod
     def is_dim_compatible(cls, d):
         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
-        return (d is None) or (d > 0)
+        return (d is None) or (d > 1)
 
     def __init__(self, d=None):
         self.d = d
-        self.input_domain = np.array([[-1, 4] for _ in range(d)])
+        self.input_domain = np.array([[-1, 1] for _ in range(d)])
 
     def get_param(self):
         return {}
@@ -776,7 +813,7 @@ class CrossInTray:
     def __call__(self, X):
         x, y = X
         res = -0.0001 * (
-                    np.abs(np.sin(x) * np.sin(y)) * np.exp(np.abs(100 - np.sqrt(x ** 2 + y ** 2) / np.pi)) + 1) ** 0.1
+                np.abs(np.sin(x) * np.sin(y)) * np.exp(np.abs(100 - np.sqrt(x ** 2 + y ** 2) / np.pi)) + 1) ** 0.1
         return res
 
 
@@ -885,7 +922,7 @@ class DixonPrice:
         return {}
 
     def get_global_minimum(self, d):
-        X = np.array([2 ** ((-2 ** (i) - 2) / 2 ** i) for i in range(1, d + 1)])
+        X = np.array([2 ** (-(2 ** i - 2) / 2 ** i) for i in range(1, d + 1)])
         return X, self(X)
 
     def __call__(self, X):
@@ -1204,7 +1241,7 @@ class Griewank:
 
     def __init__(self, d):
         self.d = d
-        self.input_domain = np.array([[-600, 600] for _ in range(d)])
+        self.input_domain = np.array([[-50, 50] for _ in range(d)])
 
     def get_param(self):
         return {}
@@ -1482,7 +1519,7 @@ class LevyN13:
     def __call__(self, X):
         x, y = X
         res = np.sin(3 * np.pi * x) ** 2 + (x - 1) ** 2 * (1 + np.sin(3 * np.pi * y) ** 2) + (y - 1) ** 2 * (
-                    1 + np.sin(2 * np.pi * y) ** 2)
+                1 + np.sin(2 * np.pi * y) ** 2)
         return res
 
 
@@ -1666,7 +1703,10 @@ class PermZeroDBeta:
 
     def __call__(self, X):
         d = X.shape[0]
-        res = np.sum([(np.sum([((j + 1) + self.beta * (X[j] ** (i + 1) - j ** (i + 1)))
+        # res = np.sum([(np.sum([((j + 1) + self.beta * (X[j] ** (i + 1) - j ** (i + 1)))
+        #                        for j in range(d)])) ** 2
+        #               for i in range(d)])
+        res = np.sum([(np.sum([(((j + 1) + self.beta) * (X[j] ** (i + 1) - 1 / (j + 1) ** (i + 1)))
                                for j in range(d)])) ** 2
                       for i in range(d)])
         return res
@@ -1700,7 +1740,8 @@ class PermDBeta:
         return {'beta': self.beta}
 
     def get_global_minimum(self, d):
-        X = np.array([1 / (i + 1) for i in range(d)])
+        # X = np.array([1 / (i + 1) for i in range(d)])
+        X = np.arange(1, d + 1)
         return X, self(X)
 
     def __call__(self, X):
@@ -1767,14 +1808,15 @@ class Qing:
 
     def __init__(self, d):
         self.d = d
-        self.input_domain = np.array([[-500, 500] for _ in range(d)])
+        self.input_domain = np.array([[-2, 2] for _ in range(d)])
 
     def get_param(self):
         return {}
 
     def get_global_minimum(self, d):
-        X = np.array([0 for _ in range(d)])
-        X = np.array([range(d)]) + 1
+        # X = np.array([0 for _ in range(d)])
+        # X = np.array([range(d)]) + 1
+        X = np.sqrt([np.arange(1, d + 1)])
         for i in range(d):
             neg = X.copy()
             neg[:, i] *= -1
@@ -1902,6 +1944,111 @@ class Ridge:
         return res
 
 
+# class Ronkkonen_Cosine:
+#     name = 'Ronkkonen_Cosine'
+#     latex_formula = r'...'
+#     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
+#     latex_formula_input_domain = r'x_i \in [0, 1], \forall i \in \llbracket 1, d\rrbracket'
+#     latex_formula_global_minimum = r'...'
+#     continuous = True
+#     convex = False
+#     separable = False
+#     differentiable = True
+#     multimodal = True
+#     randomized_term = False
+#     parametric = True
+#
+#     @classmethod
+#     def is_dim_compatible(cls, d):
+#         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
+#         return (d is None) or (d > 0)
+#
+#     def __init__(self, d, G=None, L=None, alpha=None):
+#
+#         if G is None:
+#             G = np.random.randint(2, 10, d)
+#
+#         if L is None:
+#             L = np.random.randint(2, 10, d)
+#
+#         if alpha is None:
+#             alpha = .5
+#
+#         self.d = d
+#         self.input_domain = np.array([[0, 1] for _ in range(d)])
+#         self.G = G
+#         self.L = L
+#         self.alpha = alpha
+#
+#     def get_param(self):
+#         return {'G': self.G, 'L': self.L, 'alpha': self.alpha}
+#
+#     def get_global_minimum(self, d):
+#         X = np.array([0 for _ in range(d)])
+#         X[0] = self.input_domain[0, 0]
+#         return X, self(X)
+#
+#     def __call__(self, X):
+#         res_pre = 0
+#         for i in range(self.d):
+#             res_pre += - 2 * (X[i] - .2) * np.cos((self.G[i] - 1) * 2 * np.pi * X[i]) \
+#                        - 2 * (X[i] - .8) * self.alpha * np.cos((self.G[i] - 1) * 2 * np.pi * self.L[i] * X[i])
+#         res = res_pre / (2 * self.d)
+#         return res
+
+
+# class Ronkkonen_Quad:
+#     name = 'Ronkkonen_Quad'
+#     latex_formula = r'...'
+#     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
+#     latex_formula_input_domain = r'x_i \in [0, 1], \forall i \in \llbracket 1, d\rrbracket'
+#     latex_formula_global_minimum = r'...'
+#     continuous = True
+#     convex = False
+#     separable = False
+#     differentiable = False
+#     multimodal = True
+#     randomized_term = False
+#     parametric = True
+#
+#     @classmethod
+#     def is_dim_compatible(cls, d):
+#         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
+#         return (d is None) or (d > 0)
+#
+#     def __init__(self, d, L=None, p=None, v=None):
+#
+#         if L is None:
+#             L = .3 * np.random.rand(20) + .1
+#
+#         if p is None:
+#             p = np.random.rand(20, d)
+#
+#         if v is None:
+#             v = 5 * np.random.rand(20)
+#
+#         self.d = d
+#         self.input_domain = np.array([[0, 1] for _ in range(d)])
+#         self.L = L
+#         self.p = p
+#         self.v = v
+#
+#     def get_param(self):
+#         return {'L': self.L, 'p': self.p, 'v': self.v}
+#
+#     def get_global_minimum(self, d):
+#         X = np.array([0 for _ in range(d)])
+#         X[0] = self.input_domain[0, 0]
+#         return X, self(X)
+#
+#     def __call__(self, X):
+#         res = np.amin((np.linalg.norm(X - self.p, axis=1) / self.L) ** 2 + self.v)
+#         # res = np.linalg.norm((X - self.p[0]) / self.L[0]) ** 2 + self.v[0]
+#         # for i in range(1, len(self.p)):
+#         #     res = np.minimum(res, np.linalg.norm((X - self.p[i]) / self.L[i]) ** 2 + self.v[i])
+#         return res
+
+
 class Rosenbrock:
     name = 'Rosenbrock'
     latex_formula = r'f(\mathbf{x})=\sum_{i=1}^{d-1}[b (x_{i+1} - x_i^2)^ 2 + (a - x_i)^2]'
@@ -1997,7 +2144,7 @@ class Salomon:
 
     def __init__(self, d, ):
         self.d = d
-        self.input_domain = np.array([[-100, 100] for _ in range(d)])
+        self.input_domain = np.array([[-10, 10] for _ in range(d)])
 
     def get_param(self):
         return {}
@@ -2444,6 +2591,7 @@ class ShubertN3:
     def __init__(self, d, ):
         self.d = d
         self.input_domain = np.array([[-10, 10] for _ in range(d)])
+        # self.input_domain = np.array([[-2, 2] for _ in range(d)])
 
     def get_param(self):
         return {}
@@ -2503,7 +2651,7 @@ class Sphere:
     continuous = True
     convex = True
     separable = True
-    differentiable = False
+    differentiable = True
     multimodal = False
     randomized_term = False
     parametric = False
@@ -2530,8 +2678,8 @@ class Sphere:
         return res
 
 
-class StyblinskiTank:
-    name = 'Styblinski Tank'
+class StyblinskiTang:
+    name = 'Styblinski Tang'
     latex_formula = r'f(\mathbf{x})=\frac{1}{2}\sum_{i=1}^{d} (x_i^4 -16x_i^2+5x_i)'
     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
     latex_formula_input_domain = r'x_i \in [-5, 5], \forall i \in \llbracket 1, d\rrbracket'
@@ -2674,6 +2822,42 @@ class Trid:
         i = np.arange(1, d + 1)
         res = np.sum(X - 1) ** 2 - np.sum(X[1:] * X[:-1])
         return res
+
+
+# class Weibull_pdf:
+#     name = 'Weibull_pdf'
+#     latex_formula = '...'
+#     latex_formula_dimension = '...'
+#     latex_formula_input_domain = '...'
+#     latex_formula_global_minimum = '...'
+#     continuous = True
+#     convex = False
+#     separable = False
+#     differentiable = True
+#     multimodal = True
+#     randomized_term = False
+#     parametric = False
+#
+#     @classmethod
+#     def is_dim_compatible(cls, d):
+#         assert (d is None) or (isinstance(d, int) and (not d < 0)), "The dimension d must be None or a positive integer"
+#         return (d is None) or d == 1
+#
+#     def __init__(self, d, c=1):
+#         self.d = d
+#         self.c = c
+#         self.input_domain = np.array([[0, 10] for _ in range(d)])
+#
+#     def get_param(self):
+#         return {}
+#
+#     def get_global_minimum(self, d):
+#         X = np.array([0] * d)
+#         return X, self(X)
+#
+#     def __call__(self, X):
+#         res = scipy.stats.weibull_min.pdf(X, c=self.c)
+#         return res
 
 
 class Wolfe:
@@ -2868,7 +3052,7 @@ class Zakharov:
     latex_formula_input_domain = r'x_i \in [-5, 10], \forall i \in \llbracket 1, d\rrbracket'
     latex_formula_global_minimum = r'f(0, ..., 0)=-1'
     continuous = True
-    convex = False
+    convex = True
     separable = False
     differentiable = False
     multimodal = False
