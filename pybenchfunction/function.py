@@ -2789,7 +2789,7 @@ class ThreeHump:
 
 class Trid:
     name = 'Trid'
-    latex_formula = r'f(\mathbf{x})=\sum_{i=1}^{d}(x_i-1)^2-\sum_{i=2}^{d}(x_i-1x_{i-1})'
+    latex_formula = r'f(\mathbf{x})=\sum_{i=1}^{d}(x_i-1)^2-\sum_{i=2}^{d}(x_ix_{i-1})'
     latex_formula_dimension = r'd \in \mathbb{N}_{+}^{*}'
     latex_formula_input_domain = r'x_i \in [-d^2, d^2], \forall i \in \llbracket 1, d\rrbracket'
     latex_formula_global_minimum = r'f(\mathbf{x}) =\frac{-d(d+4)(d-1)}{6}, $$$$x_i=i(d+1-i)'
@@ -2818,9 +2818,9 @@ class Trid:
         return X, self(X)
 
     def __call__(self, X):
-        d = X.shape[0]
-        i = np.arange(1, d + 1)
-        res = np.sum(X - 1) ** 2 - np.sum(X[1:] * X[:-1])
+        # d = X.shape[0]
+        # i = np.arange(1, d + 1)
+        res = np.sum((X - 1) ** 2) - np.sum(X[1:] * X[:-1])
         return res
 
 
